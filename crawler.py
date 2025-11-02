@@ -12,14 +12,14 @@
 # ///
 # Powershell Example:
 """
-uv run https://raw.githubusercontent.com/raybellwaves/pdf_asap_crawler/refs/heads/main/crawler.py `
+uv run https://raw.githubusercontent.com/raybellwaves/asap_pdf/refs/heads/uv-inline-deps/python_components/crawler/crawler.py `
     https://www.whitman.edu/academics/departments-and-programs/mathematics `
     output.csv `
     --depth 1
 """
 # Linux/MacOS Example:
 """
-uv run https://raw.githubusercontent.com/raybellwaves/pdf_asap_crawler/refs/heads/main/crawler.py \
+uv run https://raw.githubusercontent.com/raybellwaves/asap_pdf/refs/heads/uv-inline-deps/python_components/crawler/crawler.py \
     https://www.whitman.edu/academics/departments-and-programs/mathematics \
     output.csv \
     --depth 1
@@ -210,7 +210,8 @@ def bfs_search_pdfs(
             # Add the node's neighbors to the queue, if they share the same
             # domain
             for link, text in zip(links, link_texts):
-                new_domain = tldextract.extract(link).registered_domain
+                # --- MODIFIED LINE ---
+                new_domain = tldextract.extract(link).top_domain_under_public_suffix
                 allowable = any(
                     [(new_domain == domain) for domain in allowable_domains]
                 )
@@ -404,7 +405,8 @@ if __name__ == "__main__":
         # Extract domain from the starting URL to create allow list
         extracted = tldextract.extract(args.url)
         allow_list = [args.url]
-        allowable_domains = [extracted.registered_domain]
+        # --- MODIFIED LINE ---
+        allowable_domains = [extracted.top_domain_under_public_suffix]
         allowable_subdomains = args.allow_subdomains
 
         sitemap, manual_crawl_delay = parse_robots_txt(args.url, args.delay)
